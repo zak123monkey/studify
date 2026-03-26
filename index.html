@@ -7,37 +7,36 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif}
+
 body{
-  background: linear-gradient(135deg,#0f172a,#1e3a8a,#020617);
+  background: linear-gradient(135deg,#020617,#1e3a8a,#0f172a);
   color:white;
+}
+
+/* DRAGON PATTERN (subtle SVG pattern) */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><text x="10" y="70" font-size="60" fill="rgba(255,255,255,0.03)">🐉</text></svg>');
+  opacity:0.3;
+  pointer-events:none;
 }
 
 nav{
   display:flex;
   justify-content:space-around;
   padding:15px;
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.5);
   backdrop-filter:blur(10px);
-  position:sticky;
-  top:0;
 }
 
 nav button{
-  background:none;
-  border:none;
-  color:#ccc;
-  font-size:16px;
-  cursor:pointer;
-  transition:0.3s;
+  background:none;border:none;color:#ccc;font-size:16px;cursor:pointer
 }
 nav button:hover{color:#fff}
 
-.page{
-  display:none;
-  padding:40px;
-  max-width:1000px;
-  margin:auto;
-}
+.page{display:none;padding:40px;max-width:1000px;margin:auto}
 .active{display:block}
 
 .box{
@@ -45,22 +44,6 @@ nav button:hover{color:#fff}
   padding:25px;
   border-radius:20px;
   margin-top:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
-  transition:0.3s;
-}
-.box:hover{transform:translateY(-3px)}
-
-h1{margin-bottom:10px}
-h2{margin-bottom:10px}
-h3{margin-bottom:10px}
-
-textarea,input{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  margin-top:10px;
-  font-size:15px;
 }
 
 button.main{
@@ -71,26 +54,13 @@ button.main{
   background:#3b82f6;
   color:white;
   cursor:pointer;
-  transition:0.3s;
-}
-button.main:hover{
-  background:#2563eb;
-  transform:scale(1.03);
 }
 
-#time{
-  font-size:40px;
-  margin-top:15px;
-}
+textarea,input{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
 
-ul{margin-top:10px}
-li{margin:5px 0}
+#time{font-size:40px;margin-top:10px}
 
-.hero{
-  text-align:center;
-  margin-top:20px;
-}
-
+canvas{background:black;margin-top:20px}
 </style>
 </head>
 
@@ -102,28 +72,32 @@ li{margin:5px 0}
 <button onclick="showPage('notes')">Summarizer</button>
 <button onclick="showPage('planner')">Planner</button>
 <button onclick="showPage('tools')">Tools</button>
+<button onclick="showPage('game')">Game</button>
 </nav>
 
 <!-- HOME -->
 <div id="home" class="page active">
-<div class="hero">
-<h1>Study Smarter with Studiq</h1>
-<p>All your study tools in one place.</p>
-</div>
+<h1>Studiq</h1>
+<p>Study smarter. Stay focused.</p>
 
 <div class="box">
 <h3>👥 Visitors</h3>
 <img src="https://api.visitorbadge.io/api/visitors?path=studiq&label=Users&countColor=%233b82f6" />
-<p style="margin-top:10px">Helping students stay focused worldwide.</p>
+</div>
+
+<div class="box">
+<h3>🔥 Quote</h3>
+<p id="quote"></p>
+<button class="main" onclick="quote()">New Quote</button>
 </div>
 </div>
 
 <!-- TIMER -->
 <div id="timer" class="page">
 <div class="box">
-<h2>⏱ Study Timer</h2>
-<input id="mins" placeholder="Enter minutes">
-<button class="main" onclick="startTimer()">Start Timer</button>
+<h2>Timer</h2>
+<input id="mins" placeholder="Minutes">
+<button class="main" onclick="startTimer()">Start</button>
 <h1 id="time">00:00</h1>
 </div>
 </div>
@@ -131,109 +105,126 @@ li{margin:5px 0}
 <!-- SUMMARIZER -->
 <div id="notes" class="page">
 <div class="box">
-<h2>🧠 Summarizer</h2>
-<textarea id="text" placeholder="Paste notes..."></textarea>
+<h2>Summarizer</h2>
+<textarea id="text" placeholder="Paste text"></textarea>
 <button class="main" onclick="summarize()">Summarize</button>
-<div id="result" style="margin-top:10px"></div>
+<p id="result"></p>
 </div>
 </div>
 
 <!-- PLANNER -->
 <div id="planner" class="page">
 <div class="box">
-<h2>📅 Planner</h2>
-<textarea id="plan" placeholder="Math, Science, English"></textarea>
-<button class="main" onclick="makePlan()">Generate Plan</button>
-<div id="planOut" style="margin-top:10px"></div>
+<h2>Planner (example shown)</h2>
+<textarea id="plan" placeholder="Math, Science"></textarea>
+<button class="main" onclick="makePlan()">Generate</button>
+<div id="planOut"></div>
 </div>
 </div>
 
 <!-- TOOLS -->
 <div id="tools" class="page">
 <div class="box">
-<h3>🔥 Motivation</h3>
-<button class="main" onclick="quote()">Get Motivation</button>
-<p id="quote" style="margin-top:10px"></p>
-
-<h3 style="margin-top:20px">📋 Tasks</h3>
-<input id="taskInput" placeholder="Add a task">
-<button class="main" onclick="addTask()">Add Task</button>
+<h3>Tasks</h3>
+<input id="taskInput" placeholder="Add task">
+<button class="main" onclick="addTask()">Add</button>
 <ul id="tasks"></ul>
+</div>
+</div>
 
-<h3 style="margin-top:20px">🎯 Goal</h3>
-<input id="goalInput" placeholder="Your goal">
-<button class="main" onclick="setGoal()">Save Goal</button>
-<p id="goal" style="margin-top:10px"></p>
+<!-- GAME -->
+<div id="game" class="page">
+<div class="box">
+<h2>Pac-Man (simple)</h2>
+<canvas id="gameCanvas" width="300" height="300"></canvas>
 </div>
 </div>
 
 <script>
 function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
 }
 
+// TIMER
 let t,int;
 function startTimer(){
-  let m=document.getElementById("mins").value;
-  t=m*60;
-  clearInterval(int);
-  int=setInterval(()=>{
-    let min=Math.floor(t/60);
-    let sec=t%60;
-    document.getElementById("time").innerText=min+":"+(sec<10?"0":"")+sec;
-    t--;
-  },1000);
+ let m=document.getElementById('mins').value;
+ t=m*60;
+ clearInterval(int);
+ int=setInterval(()=>{
+  let min=Math.floor(t/60);
+  let sec=t%60;
+  document.getElementById('time').innerText=min+":"+(sec<10?"0":"")+sec;
+  t--;
+ },1000);
 }
 
-function summarize(){
-  let text=document.getElementById("text").value;
-  let s=text.split(".");
-  document.getElementById("result").innerHTML=s.slice(0,3).join(".");
-}
-
-function makePlan(){
-  let t=document.getElementById("plan").value.split(",");
-  let out="";
-  t.forEach((d,i)=> out+="Day "+(i+1)+": "+d+"<br>");
-  document.getElementById("planOut").innerHTML=out;
-}
-
-let quotes=["Stay focused","Keep going","Discipline wins","Consistency matters"];
+// QUOTES
+let quotes=["Stay focused","Win the day","Discipline wins","No excuses"];
 function quote(){
-  document.getElementById("quote").innerText=
-  quotes[Math.floor(Math.random()*quotes.length)];
+ document.getElementById('quote').innerText=quotes[Math.floor(Math.random()*quotes.length)];
+}
+quote();
+
+// SUMMARIZER
+function summarize(){
+ let text=document.getElementById('text').value;
+ let s=text.split('.');
+ document.getElementById('result').innerText=s.slice(0,3).join('.')+'.';
 }
 
-let tasks=JSON.parse(localStorage.getItem("tasks"))||[];
+// PLANNER
+function makePlan(){
+ let t=document.getElementById('plan').value.split(',');
+ let out="";
+ t.forEach((d,i)=> out+="Day "+(i+1)+": "+d+"\n");
+ document.getElementById('planOut').innerText=out;
+}
+
+// TASKS
+let tasks=JSON.parse(localStorage.getItem('tasks'))||[];
 function render(){
-  let list=document.getElementById("tasks");
-  list.innerHTML="";
-  tasks.forEach((t,i)=>{
-    list.innerHTML+=`<li>${t} <button onclick="del(${i})">X</button></li>`;
-  });
+ let list=document.getElementById('tasks');
+ list.innerHTML="";
+ tasks.forEach((t,i)=>{
+  list.innerHTML+=`<li>${t} <button onclick="del(${i})">X</button></li>`;
+ });
 }
 function addTask(){
-  let t=document.getElementById("taskInput").value;
-  tasks.push(t);
-  localStorage.setItem("tasks",JSON.stringify(tasks));
-  render();
+ let t=document.getElementById('taskInput').value;
+ tasks.push(t);
+ localStorage.setItem('tasks',JSON.stringify(tasks));
+ render();
 }
 function del(i){
-  tasks.splice(i,1);
-  localStorage.setItem("tasks",JSON.stringify(tasks));
-  render();
+ tasks.splice(i,1);
+ localStorage.setItem('tasks',JSON.stringify(tasks));
+ render();
 }
 render();
 
-function setGoal(){
-  let g=document.getElementById("goalInput").value;
-  localStorage.setItem("goal",g);
-  document.getElementById("goal").innerText=g;
+// SIMPLE PACMAN
+let c=document.getElementById('gameCanvas');
+let ctx=c.getContext('2d');
+let x=150;
+document.addEventListener('keydown',e=>{
+ if(e.key==='ArrowLeft')x-=10;
+ if(e.key==='ArrowRight')x+=10;
+});
+function draw(){
+ ctx.clearRect(0,0,300,300);
+ ctx.beginPath();
+ ctx.arc(x,150,20,0.2*Math.PI,1.8*Math.PI);
+ ctx.lineTo(x,150);
+ ctx.fillStyle='yellow';
+ ctx.fill();
+ requestAnimationFrame(draw);
 }
+draw();
 </script>
 
-<script type="text/javascript">
+<script>
 var sc_project=13212872; 
 var sc_invisible=1; 
 var sc_security="14c16a4e"; 
