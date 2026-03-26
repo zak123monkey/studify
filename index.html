@@ -1,27 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Studiq</title>
+<title>Studiq - Ultimate Study Platform</title>
 
 <style>
 body {
   margin: 0;
-  font-family: Arial;
-  background: linear-gradient(135deg, #0a0f2c, #1a0f2e, #2a0d1f);
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a, #020617);
   color: white;
-  text-align: center;
+  overflow-x: hidden;
 }
 
+/* Navigation */
 nav {
-  background: rgba(0,0,0,0.5);
-  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  padding: 15px;
+  background: rgba(0,0,0,0.4);
 }
 
-button {
-  margin: 5px;
-  padding: 10px;
-  border-radius: 8px;
+nav button {
+  background: none;
   border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.page {
+  display: none;
+  padding: 40px;
+  max-width: 1000px;
+  margin: auto;
+}
+.active { display: block; }
+
+.box {
+  background: rgba(255,255,255,0.08);
+  padding: 30px;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+textarea, input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+button.main {
+  margin-top: 10px;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  background: #3b82f6;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -30,47 +67,130 @@ button {
 <body>
 
 <nav>
-  <button onclick="show('home')">Home</button>
-  <button onclick="show('tools')">Tools</button>
-  <button onclick="show('games')">Games</button>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('timer')">Timer</button>
+<button onclick="showPage('notes')">Summarizer</button>
+<button onclick="showPage('planner')">Planner</button>
+<button onclick="showPage('tools')">Tools</button>
 </nav>
 
-<div id="home">
-  <h1>Studiq</h1>
-  <p>Study smarter, not harder.</p>
+<!-- HOME -->
+<div id="home" class="page active">
+<h1>Welcome & Study</h1>
+
+<p style="text-align:center;">
+"to be is to do" — zak123monkey
+</p>
+
+<!-- 🔥 VISITOR COUNTER -->
+<p style="text-align:center; font-size:18px;">
+👀 Visitors: <span id="visits">Loading...</span>
+</p>
+
+<div class="box">
+<p>
+Welcome to Studiq — your all-in-one study system designed to help students focus better.
+</p>
+</div>
 </div>
 
-<div id="tools" style="display:none;">
-  <h2>Summarizer</h2>
-  <textarea id="notes"></textarea><br>
-  <button onclick="summarize()">Summarize</button>
-  <p id="summary"></p>
+<!-- TIMER -->
+<div id="timer" class="page">
+<div class="box">
+<h2>⏱️ Study Timer</h2>
+<input id="mins" placeholder="Enter minutes">
+<button class="main" onclick="startTimer()">Start Timer</button>
+<h1 id="time">00:00</h1>
+</div>
 </div>
 
-<div id="games" style="display:none;">
-  <h2>Game</h2>
-  <button onclick="clickGame()">Click me</button>
-  <p id="score">Score: 0</p>
+<!-- SUMMARIZER -->
+<div id="notes" class="page">
+<div class="box">
+<h2>🧠 Smart Summarizer</h2>
+<textarea id="text"></textarea>
+<button class="main" onclick="summarize()">Summarize</button>
+<div id="result"></div>
+</div>
+</div>
+
+<!-- PLANNER -->
+<div id="planner" class="page">
+<div class="box">
+<h2>📅 Study Planner</h2>
+<textarea id="plan"></textarea>
+<button class="main" onclick="makePlan()">Generate Plan</button>
+<div id="planOut"></div>
+</div>
+</div>
+
+<!-- TOOLS -->
+<div id="tools" class="page">
+<div class="box">
+<h3>💬 Motivation</h3>
+<button onclick="quote()">Get Motivation</button>
+<p id="quote"></p>
+</div>
 </div>
 
 <script>
-function show(id) {
-  document.getElementById("home").style.display = "none";
-  document.getElementById("tools").style.display = "none";
-  document.getElementById("games").style.display = "none";
-  document.getElementById(id).style.display = "block";
+
+/* NAV */
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-function summarize() {
-  let text = document.getElementById("notes").value;
-  document.getElementById("summary").innerText = text.slice(0, 50) + "...";
+/* TIMER */
+let t,int;
+function startTimer(){
+  let m=document.getElementById("mins").value;
+  t=m*60;
+  clearInterval(int);
+  int=setInterval(()=>{
+    let min=Math.floor(t/60);
+    let sec=t%60;
+    document.getElementById("time").innerText=min+":"+(sec<10?"0":"")+sec;
+    t--;
+  },1000);
 }
 
-let score = 0;
-function clickGame() {
-  score++;
-  document.getElementById("score").innerText = "Score: " + score;
+/* SUMMARIZER */
+function summarize(){
+  let text=document.getElementById("text").value;
+  let sentences=text.split(".");
+  let summary=sentences.slice(0,3).join(".");
+  document.getElementById("result").innerHTML=summary;
 }
+
+/* PLANNER */
+function makePlan(){
+  let t=document.getElementById("plan").value.split(",");
+  let out="";
+  t.forEach((d,i)=>{out+="Day "+(i+1)+": "+d+"<br>";});
+  document.getElementById("planOut").innerHTML=out;
+}
+
+/* MOTIVATION */
+let quotes=[
+"Stay focused and never give up",
+"Small progress is still progress",
+"Discipline beats motivation",
+"Consistency creates success"
+];
+
+function quote(){
+  document.getElementById("quote").innerText=
+  quotes[Math.floor(Math.random()*quotes.length)];
+}
+
+/* 🔥 REAL GLOBAL COUNTER */
+fetch("https://api.countapi.xyz/hit/studiq-global/visits")
+.then(res=>res.json())
+.then(data=>{
+  document.getElementById("visits").innerText=data.value;
+});
+
 </script>
 
 </body>
