@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Studiq - Ultimate Study Platform</title>
+<title>Studiq - Addictive Version</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -13,13 +13,13 @@ body{
   color:white;
 }
 
-/* DRAGON PATTERN (subtle SVG pattern) */
+/* STRONGER DRAGON PATTERN BORDER */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><text x="10" y="70" font-size="60" fill="rgba(255,255,255,0.03)">🐉</text></svg>');
-  opacity:0.3;
+  border:20px solid transparent;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><text x="10" y="80" font-size="70" fill="rgba(255,255,255,0.06)">🐉</text></svg>');
   pointer-events:none;
 }
 
@@ -28,7 +28,6 @@ nav{
   justify-content:space-around;
   padding:15px;
   background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(10px);
 }
 
 nav button{
@@ -57,10 +56,8 @@ button.main{
 }
 
 textarea,input{width:100%;padding:10px;margin-top:10px;border-radius:10px;border:none}
-
 #time{font-size:40px;margin-top:10px}
 
-canvas{background:black;margin-top:20px}
 </style>
 </head>
 
@@ -75,10 +72,9 @@ canvas{background:black;margin-top:20px}
 <button onclick="showPage('game')">Game</button>
 </nav>
 
-<!-- HOME -->
 <div id="home" class="page active">
 <h1>Studiq</h1>
-<p>Study smarter. Stay focused.</p>
+<p>Level up your studying 🔥</p>
 
 <div class="box">
 <h3>👥 Visitors</h3>
@@ -86,57 +82,66 @@ canvas{background:black;margin-top:20px}
 </div>
 
 <div class="box">
-<h3>🔥 Quote</h3>
+<h3>🔥 Daily Quote</h3>
 <p id="quote"></p>
 <button class="main" onclick="quote()">New Quote</button>
 </div>
+
+<div class="box">
+<h3>🏆 Your Streak</h3>
+<p id="streak"></p>
+<button class="main" onclick="increaseStreak()">Mark Study Done</button>
+</div>
 </div>
 
-<!-- TIMER -->
 <div id="timer" class="page">
 <div class="box">
-<h2>Timer</h2>
+<h2>⏱ Timer</h2>
 <input id="mins" placeholder="Minutes">
 <button class="main" onclick="startTimer()">Start</button>
 <h1 id="time">00:00</h1>
 </div>
 </div>
 
-<!-- SUMMARIZER -->
 <div id="notes" class="page">
 <div class="box">
-<h2>Summarizer</h2>
+<h2>🧠 Summarizer</h2>
 <textarea id="text" placeholder="Paste text"></textarea>
 <button class="main" onclick="summarize()">Summarize</button>
 <p id="result"></p>
 </div>
 </div>
 
-<!-- PLANNER -->
 <div id="planner" class="page">
 <div class="box">
-<h2>Planner (example shown)</h2>
+<h2>📅 Planner</h2>
 <textarea id="plan" placeholder="Math, Science"></textarea>
 <button class="main" onclick="makePlan()">Generate</button>
 <div id="planOut"></div>
 </div>
 </div>
 
-<!-- TOOLS -->
 <div id="tools" class="page">
 <div class="box">
-<h3>Tasks</h3>
+<h3>📋 Tasks</h3>
 <input id="taskInput" placeholder="Add task">
 <button class="main" onclick="addTask()">Add</button>
 <ul id="tasks"></ul>
 </div>
+
+<div class="box">
+<h3>🎯 Goal</h3>
+<input id="goalInput" placeholder="Your goal">
+<button class="main" onclick="setGoal()">Save Goal</button>
+<p id="goal"></p>
+</div>
 </div>
 
-<!-- GAME -->
 <div id="game" class="page">
 <div class="box">
-<h2>Pac-Man (simple)</h2>
+<h2>🎮 Pac-Man</h2>
 <canvas id="gameCanvas" width="300" height="300"></canvas>
+<p>Score: <span id="score">0</span></p>
 </div>
 </div>
 
@@ -166,6 +171,12 @@ function quote(){
  document.getElementById('quote').innerText=quotes[Math.floor(Math.random()*quotes.length)];
 }
 quote();
+
+// STREAK SYSTEM (ADDICTIVE)
+let streak=localStorage.getItem('streak')||0;
+function updateStreak(){document.getElementById('streak').innerText=streak+" days"}
+function increaseStreak(){streak++;localStorage.setItem('streak',streak);updateStreak()}
+updateStreak();
 
 // SUMMARIZER
 function summarize(){
@@ -204,13 +215,21 @@ function del(i){
 }
 render();
 
-// SIMPLE PACMAN
+// GOAL
+function setGoal(){
+ let g=document.getElementById('goalInput').value;
+ localStorage.setItem('goal',g);
+ document.getElementById('goal').innerText=g;
+}
+
+// PACMAN + SCORE
 let c=document.getElementById('gameCanvas');
 let ctx=c.getContext('2d');
-let x=150;
+let x=150, score=0;
 document.addEventListener('keydown',e=>{
- if(e.key==='ArrowLeft')x-=10;
- if(e.key==='ArrowRight')x+=10;
+ if(e.key==='ArrowLeft'){x-=10;score++}
+ if(e.key==='ArrowRight'){x+=10;score++}
+ document.getElementById('score').innerText=score;
 });
 function draw(){
  ctx.clearRect(0,0,300,300);
