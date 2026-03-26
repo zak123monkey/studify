@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Studiq - Ultimate Study Platform</title>
 
+<title>Studiq - Ultimate Study Platform</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -30,7 +30,6 @@ nav button {
   color: white;
   font-size: 16px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 nav button:hover {
@@ -94,15 +93,18 @@ button.main:hover {
 <!-- HOME -->
 <div id="home" class="page active">
 <h1>Studiq</h1>
-<p>Level up your studying.</p>
+<p>Study smarter. Stay focused.</p>
 
 <div class="box">
-<p>
-Welcome to Studiq — your all-in-one study system.
-</p>
 
 <h3>👥 Visitors:</h3>
-<p id="visits">Loading...</p>
+
+<img src="https://api.visitorbadge.io/api/visitors?path=studiq&label=Visitors&countColor=%233b82f6" />
+
+<p style="margin-top:15px;">
+Your activity is also tracked for deeper insights.
+</p>
+
 </div>
 </div>
 
@@ -139,6 +141,7 @@ Welcome to Studiq — your all-in-one study system.
 <!-- TOOLS -->
 <div id="tools" class="page">
 <div class="box">
+
 <h3>Motivation</h3>
 <button onclick="quote()">Get Quote</button>
 <p id="quote"></p>
@@ -152,6 +155,7 @@ Welcome to Studiq — your all-in-one study system.
 <input id="goalInput">
 <button onclick="setGoal()">Save</button>
 <p id="goal"></p>
+
 </div>
 </div>
 
@@ -228,12 +232,9 @@ function setGoal(){
   document.getElementById("goal").innerText=g;
 }
 
-/* VISITOR DISPLAY */
-document.getElementById("visits").innerText="Tracking via StatCounter...";
-
 </script>
 
-<!-- STATCOUNTER (YOUR REAL TRACKER) -->
+<!-- REAL TRACKING (StatCounter) -->
 <script type="text/javascript">
 var sc_project=13212872; 
 var sc_invisible=1; 
