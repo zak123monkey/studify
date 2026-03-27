@@ -53,7 +53,6 @@ button.main {
   border: none;
   background: linear-gradient(135deg,#3b82f6,#6366f1);
   color: white;
-  cursor: pointer;
 }
 
 #time { font-size:48px; text-align:center; }
@@ -92,8 +91,6 @@ button.main {
 <div class="box">
 <h2>📊 Dashboard</h2>
 <p>🔥 Streak: <span id="dashStreak"></span></p>
-<p>📋 Tasks: <span id="taskCount"></span></p>
-<button class="main" onclick="showPage('timer')">Start Study</button>
 </div>
 
 <div class="box">
@@ -151,8 +148,8 @@ button.main {
 <canvas id="gameCanvas" width="800" height="600"></canvas>
 
 <div id="gameUI">
-<div id="gameText">Start Game</div>
-<button onclick="startGame()">Start</button>
+<div id="gameText">Click Start</div>
+<button onclick="startGame()">Start Game</button>
 </div>
 
 <button onclick="closeGame()" style="position:absolute;top:10px;right:10px;">Exit</button>
@@ -168,15 +165,14 @@ function showPage(id){
 
 /* DASHBOARD */
 function updateDashboard(){
-  dashStreak.innerText=localStorage.streak||0;
-  taskCount.innerText=JSON.parse(localStorage.tasks||"[]").length;
+  document.getElementById("dashStreak").innerText=localStorage.streak||0;
 }
 updateDashboard();
 
 /* TIMER */
 let timer;
 function startTimer(){
-  let m=parseInt(mins.value);
+  let m=parseInt(document.getElementById("mins").value);
   if(!m) return;
 
   let t=m*60,l=t;
@@ -184,42 +180,67 @@ function startTimer(){
 
   timer=setInterval(()=>{
     l--;
-    time.innerText=Math.floor(l/60)+":"+("0"+l%60).slice(-2);
-    bar.style.width=((t-l)/t)*100+"%";
+    document.getElementById("time").innerText=
+      Math.floor(l/60)+":"+("0"+l%60).slice(-2);
+
+    document.getElementById("bar").style.width=((t-l)/t)*100+"%";
+
     if(l<=0) clearInterval(timer);
   },1000);
 }
 
+/* SUMMARIZER */
+function summarize(){
+  let t=document.getElementById("text").value;
+  document.getElementById("result").innerText=
+    t.split(". ").slice(0,3).join(". ");
+}
+
+/* PLANNER */
+function makePlan(){
+  let arr=document.getElementById("plan").value.split(",");
+  document.getElementById("planOut").innerHTML=
+    arr.map((s,i)=>"Day "+(i+1)+": "+s).join("<br>");
+}
+
 /* TASKS */
 let tasks=JSON.parse(localStorage.tasks||"[]");
+
 function renderTasks(){
-  tasksEl.innerHTML="";
-  tasks.forEach((t,i)=>{
-    tasksEl.innerHTML+=`<li>${t}</li>`;
+  let list=document.getElementById("tasks");
+  list.innerHTML="";
+  tasks.forEach(t=>{
+    list.innerHTML+=`<li>${t}</li>`;
   });
 }
+
 function addTask(){
-  if(!taskInput.value.trim()) return;
-  tasks.push(taskInput.value);
+  let input=document.getElementById("taskInput");
+  if(!input.value.trim()) return;
+
+  tasks.push(input.value);
   localStorage.tasks=JSON.stringify(tasks);
-  taskInput.value="";
+  input.value="";
   renderTasks();
-  updateDashboard();
 }
 renderTasks();
 
-/* GAME */
-let ctx=gameCanvas.getContext("2d");
-let bird, pipes, velocity, gravity, running, frame;
+/* ===== FIXED FLAPPY BIRD ===== */
+
+let canvas=document.getElementById("gameCanvas");
+let ctx=canvas.getContext("2d");
+
+let bird, pipes, velocity, gravity, running, frame, loopId;
 
 function openGame(){
-  gameScreen.style.display="block";
+  document.getElementById("gameScreen").style.display="block";
   resetGame();
 }
 
 function closeGame(){
-  gameScreen.style.display="none";
+  document.getElementById("gameScreen").style.display="none";
   running=false;
+  cancelAnimationFrame(loopId);
 }
 
 function resetGame(){
@@ -229,19 +250,23 @@ function resetGame(){
   gravity=0.5;
   running=false;
   frame=0;
-  draw();
+
+  draw(); // prevent black screen
 }
 
 function startGame(){
   running=true;
+  document.getElementById("gameUI").style.display="none";
   loop();
 }
 
 function loop(){
   if(!running) return;
+
   update();
   draw();
-  requestAnimationFrame(loop);
+
+  loopId=requestAnimationFrame(loop);
 }
 
 function update(){
@@ -257,14 +282,17 @@ function update(){
 
   pipes.forEach(p=>{
     p.x-=3;
+
     if(
       bird.x<p.x+50 &&
       bird.x+20>p.x &&
       (bird.y<p.top||bird.y+20>p.bottom)
     ){
-      running=false;
+      endGame();
     }
   });
+
+  if(bird.y>600||bird.y<0) endGame();
 }
 
 function draw(){
@@ -281,11 +309,22 @@ function draw(){
   });
 }
 
+function endGame(){
+  running=false;
+  cancelAnimationFrame(loopId);
+
+  document.getElementById("gameUI").style.display="flex";
+  document.getElementById("gameText").innerText="Game Over";
+}
+
+/* CONTROLS */
 document.addEventListener("keydown",e=>{
-  if(e.code==="Space") velocity=-8;
+  if(e.code==="Space" && running) velocity=-8;
 });
 
-gameCanvas.addEventListener("click",()=>velocity=-8);
+canvas.addEventListener("click",()=>{
+  if(running) velocity=-8;
+});
 
 </script>
 
