@@ -8,134 +8,78 @@
 <style>
 body {
   margin: 0;
-  font-family: 'Inter', Arial, sans-serif;
-  background: linear-gradient(135deg, #2c003e, #5a0f4d, #a83279, #ff6a3d);
+  font-family: Arial;
+  background: linear-gradient(135deg,#2c003e,#a83279,#ff6a3d);
   color: white;
 }
 
 nav {
-  display: flex;
-  justify-content: space-around;
-  padding: 15px;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(10px);
+  display:flex;
+  justify-content:space-around;
+  padding:15px;
+  background:rgba(0,0,0,0.4);
 }
 
-nav button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
+button { cursor:pointer; }
 
-/* Pages */
 .page {
-  display: none;
-  padding: 40px;
-  max-width: 1000px;
-  margin: auto;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
+  display:none;
+  padding:40px;
+  max-width:1000px;
+  margin:auto;
 }
 
-.page.active {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
+.page.active { display:block; }
 
-/* Cards */
 .box {
-  background: rgba(255,255,255,0.08);
-  padding: 25px;
-  border-radius: 20px;
-  margin-top: 20px;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  background:rgba(255,255,255,0.08);
+  padding:20px;
+  border-radius:15px;
+  margin-top:20px;
 }
 
-textarea, input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  margin-top: 10px;
-}
-
-/* Buttons */
-button {
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
-}
-
-button:active {
-  transform: scale(0.96);
+input,textarea {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
 }
 
 button.main {
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: linear-gradient(135deg,#3b82f6,#6366f1);
-  color: white;
-  cursor: pointer;
+  margin-top:10px;
+  padding:10px;
 }
 
-#time {
-  font-size: 48px;
-  text-align: center;
-  margin-top: 15px;
-}
+.progress { height:6px; background:#333; margin-top:10px; }
+.progress-bar { height:100%; width:0%; background:lime; }
 
-/* Progress */
-.progress {
-  height: 6px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: #22c55e;
-  transition: width 0.3s linear;
+/* Toast */
+#toast {
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:black;
+  padding:10px;
+  display:none;
 }
 
 /* GAME */
 #gameCanvas {
-  background: linear-gradient(#4facfe,#00f2fe);
-  display: block;
-  margin: auto;
+  display:block;
+  margin:auto;
 }
 
 #gameUI {
   position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  inset:0;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  color:white;
-  font-size:24px;
   pointer-events:none;
 }
 
-#gameUI button {
-  pointer-events:auto;
-  margin-top:15px;
-}
+#gameUI button { pointer-events:auto; }
 
 </style>
 </head>
@@ -152,40 +96,33 @@ button.main {
 
 <!-- HOME -->
 <div id="home" class="page active">
-<h1>Welcome to Studiq</h1>
-<p style="text-align:center;">"to be is to do" — zak123monkey</p>
-
-<h3>🔥 Study Streak</h3>
-<p id="streak">0 days</p>
+<h1>Studiq</h1>
 
 <div class="box">
-<p>All-in-one study system to help you focus and improve daily.</p>
-</div>
-
-<div class="box" style="text-align:center;">
-<h3>⚠️ Found a problem?</h3>
-<a href="mailto:zmal4525@gmail.com">📩 Email Support</a>
+<h2>Dashboard</h2>
+<p>Streak: <span id="dashStreak"></span></p>
+<p>Tasks: <span id="taskCount"></span></p>
+<p>Goal: <span id="dashGoal"></span></p>
+<button class="main" onclick="showPage('timer')">Start Study</button>
 </div>
 </div>
 
 <!-- TIMER -->
 <div id="timer" class="page">
 <div class="box">
-<h2>⏱ Study Timer</h2>
-<input id="mins" placeholder="Enter minutes">
-<button class="main" onclick="startTimer()">Start</button>
+<input id="mins">
+<button onclick="startTimer()">Start</button>
 <h1 id="time">00:00</h1>
 <div class="progress"><div id="bar" class="progress-bar"></div></div>
 </div>
 </div>
 
-<!-- SUMMARIZER -->
+<!-- NOTES -->
 <div id="notes" class="page">
 <div class="box">
-<h2>🧠 Smart Summarizer</h2>
 <textarea id="text"></textarea>
-<button class="main" onclick="summarize()">Summarize</button>
-<button class="main" onclick="copySummary()">Copy</button>
+<button onclick="summarize()">Summarize</button>
+<button onclick="copySummary()">Copy</button>
 <p id="result"></p>
 </div>
 </div>
@@ -193,9 +130,8 @@ button.main {
 <!-- PLANNER -->
 <div id="planner" class="page">
 <div class="box">
-<h2>📅 Planner</h2>
 <textarea id="plan"></textarea>
-<button class="main" onclick="makePlan()">Generate</button>
+<button onclick="makePlan()">Generate</button>
 <p id="planOut"></p>
 </div>
 </div>
@@ -204,22 +140,18 @@ button.main {
 <div id="tools" class="page">
 <div class="box">
 
-<h3>💬 Motivation</h3>
-<button class="main" onclick="quote()">Get Quote</button>
+<button onclick="quote()">Quote</button>
 <p id="quote"></p>
 
-<h3>📝 Tasks</h3>
 <input id="taskInput">
-<button class="main" onclick="addTask()">Add</button>
+<button onclick="addTask()">Add Task</button>
 <ul id="tasks"></ul>
 
-<h3>🎯 Goal</h3>
 <input id="goalInput">
-<button class="main" onclick="setGoal()">Save</button>
+<button onclick="setGoal()">Save Goal</button>
 <p id="goal"></p>
 
-<h3>🎮 Game</h3>
-<button class="main" onclick="openGame()">Play</button>
+<button onclick="openGame()">Play Game</button>
 
 </div>
 </div>
@@ -229,12 +161,14 @@ button.main {
 <canvas id="gameCanvas" width="800" height="600"></canvas>
 
 <div id="gameUI">
-  <div id="gameText">Click or press SPACE to start</div>
-  <button onclick="startGame()">Start Game</button>
+<div id="gameText">Press Start</div>
+<button onclick="startGame()">Start</button>
 </div>
 
 <button onclick="closeGame()" style="position:absolute;top:10px;right:10px;">Exit</button>
 </div>
+
+<div id="toast"></div>
 
 <script>
 
@@ -242,83 +176,70 @@ button.main {
 function showPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* DASHBOARD */
+function updateDashboard(){
+  dashStreak.innerText=localStorage.streak||0;
+  taskCount.innerText=JSON.parse(localStorage.tasks||"[]").length;
+  dashGoal.innerText=localStorage.goal||"None";
+}
+updateDashboard();
+
+/* TOAST */
+function showToast(t){
+  toast.innerText=t;
+  toast.style.display="block";
+  setTimeout(()=>toast.style.display="none",2000);
 }
 
 /* TIMER */
 let timer;
 function startTimer(){
-  let mins=parseInt(minsInput.value);
-  if(!mins || mins<=0) return alert("Enter valid minutes");
-
-  let total=mins*60, left=total;
-
+  let m=parseInt(mins.value);
+  if(!m) return;
+  let t=m*60,l=t;
   clearInterval(timer);
-
   timer=setInterval(()=>{
-    left--;
-    let m=Math.floor(left/60);
-    let s=left%60;
-
-    time.innerText=`${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`;
-    bar.style.width=((total-left)/total)*100+"%";
-
-    if(left<=0){
-      clearInterval(timer);
-      new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play();
-    }
+    l--;
+    time.innerText=Math.floor(l/60)+":"+("0"+l%60).slice(-2);
+    bar.style.width=((t-l)/t)*100+"%";
+    if(l<=0) clearInterval(timer);
   },1000);
 }
 
 /* SUMMARIZER */
 function summarize(){
-  let t=text.value.trim();
-  if(!t) return result.innerText="Enter text.";
-  result.innerText=t.split(". ").slice(0,3).join(". ");
+  result.innerText=text.value.split(". ").slice(0,3).join(". ");
 }
-
-function copySummary(){
-  navigator.clipboard.writeText(result.innerText);
-}
+function copySummary(){navigator.clipboard.writeText(result.innerText);}
 
 /* PLANNER */
 function makePlan(){
-  let arr=plan.value.split(",");
-  let out="";
-  arr.forEach((s,i)=>{
-    if(s.trim()) out+=`Day ${i+1}: ${s}<br>`;
-  });
-  planOut.innerHTML=out||"Enter subjects.";
+  planOut.innerHTML=plan.value.split(",").map((s,i)=>"Day "+(i+1)+": "+s).join("<br>");
 }
 
 /* TASKS */
 let tasks=JSON.parse(localStorage.tasks||"[]");
-
 function renderTasks(){
   tasksEl.innerHTML="";
-  tasks.forEach((t,i)=>{
-    tasksEl.innerHTML+=`<li>${t} <button onclick="delTask(${i})">❌</button></li>`;
-  });
+  tasks.forEach((t,i)=>tasksEl.innerHTML+=`<li>${t} <button onclick="delTask(${i})">❌</button></li>`);
 }
-
 function addTask(){
   if(!taskInput.value.trim()) return;
   tasks.push(taskInput.value);
   localStorage.tasks=JSON.stringify(tasks);
   taskInput.value="";
   renderTasks();
+  updateDashboard();
+  showToast("Task added");
 }
-
 function delTask(i){
   tasks.splice(i,1);
   localStorage.tasks=JSON.stringify(tasks);
   renderTasks();
+  updateDashboard();
 }
-
-taskInput.addEventListener("keypress",e=>{
-  if(e.key==="Enter") addTask();
-});
-
 renderTasks();
 
 /* GOAL */
@@ -326,32 +247,32 @@ goal.innerText=localStorage.goal||"";
 function setGoal(){
   localStorage.goal=goalInput.value;
   goal.innerText=goalInput.value;
+  updateDashboard();
+  showToast("Goal saved");
 }
 
 /* STREAK */
 let today=new Date().toDateString();
 let last=localStorage.last;
-
 if(last!==today){
-  let s=parseInt(localStorage.streak||"0");
+  let s=parseInt(localStorage.streak||0);
   let y=new Date(); y.setDate(y.getDate()-1);
   s=(last===y.toDateString())?s+1:1;
   localStorage.streak=s;
   localStorage.last=today;
 }
-streak.innerText=(localStorage.streak||0)+" days";
+updateDashboard();
 
 /* QUOTE */
 function quote(){
-  let q=["Stay focused","Keep going","Discipline wins","You got this"];
+  let q=["Stay focused","Keep going","You got this"];
   quoteEl.innerText=q[Math.floor(Math.random()*q.length)];
 }
 
-/* ===== PREMIUM FLAPPY BIRD ===== */
-let canvas=document.getElementById("gameCanvas");
-let ctx=canvas.getContext("2d");
+/* ===== FLAPPY BIRD FIXED ===== */
+let ctx=gameCanvas.getContext("2d");
 
-let bird, pipes, velocity, gravity, score, highScore, running, loopId;
+let bird,pipes,vel,grav,score,run,loopId;
 
 function openGame(){
   gameScreen.style.display="block";
@@ -361,57 +282,53 @@ function openGame(){
 function closeGame(){
   gameScreen.style.display="none";
   cancelAnimationFrame(loopId);
-  running=false;
+  run=false;
 }
 
 function resetGame(){
   bird={x:100,y:250,size:20};
   pipes=[];
-  velocity=0;
-  gravity=0.5;
+  vel=0;
+  grav=0.5;
   score=0;
-  highScore=localStorage.highScore||0;
-  running=false;
+  run=false;
 
   gameUI.style.display="flex";
-  gameText.innerText="Click or press SPACE to start";
+  gameText.innerText="Press Start";
+
+  draw(); // ✅ FIX (prevents black screen)
 }
 
 function startGame(){
-  running=true;
+  run=true;
   gameUI.style.display="none";
   loop();
 }
 
 function loop(){
-  if(!running) return;
+  if(!run) return;
   update();
   draw();
   loopId=requestAnimationFrame(loop);
 }
 
 function update(){
-  velocity+=gravity;
-  bird.y+=velocity;
+  vel+=grav;
+  bird.y+=vel;
 
   if(pipes.length===0||pipes[pipes.length-1].x<500){
     let gap=150;
     let top=Math.random()*300+50;
-    pipes.push({x:800,top,bottom:top+gap,passed:false});
+    pipes.push({x:800,top,bottom:top+gap});
   }
 
   pipes.forEach(p=>{
     p.x-=3;
 
-    if(!p.passed && p.x<bird.x){
-      score++;
-      p.passed=true;
-    }
-
     if(
-      bird.x < p.x+50 &&
-      bird.x+bird.size > p.x &&
-      (bird.y < p.top || bird.y+bird.size > p.bottom)
+      bird.x<p.x+50 &&
+      bird.x+20>p.x &&
+      (bird.y<p.top||bird.y+20>p.bottom)
     ){
       endGame();
     }
@@ -421,48 +338,33 @@ function update(){
 }
 
 function draw(){
-  ctx.clearRect(0,0,800,600);
+  ctx.fillStyle="#70c5ce"; // sky (fix black look)
+  ctx.fillRect(0,0,800,600);
 
   ctx.fillStyle="yellow";
-  ctx.save();
-  ctx.translate(bird.x,bird.y);
-  ctx.rotate(velocity*0.05);
-  ctx.fillRect(0,0,bird.size,bird.size);
-  ctx.restore();
+  ctx.fillRect(bird.x,bird.y,20,20);
 
-  ctx.fillStyle="lime";
+  ctx.fillStyle="green";
   pipes.forEach(p=>{
     ctx.fillRect(p.x,0,50,p.top);
     ctx.fillRect(p.x,p.bottom,50,600);
   });
 
   ctx.fillStyle="white";
-  ctx.font="24px Arial";
-  ctx.fillText("Score: "+score,20,40);
-  ctx.fillText("Best: "+highScore,20,70);
-}
-
-function jump(){
-  if(!running) return;
-  velocity=-8;
+  ctx.fillText("Score: "+score,20,20);
 }
 
 document.addEventListener("keydown",e=>{
-  if(e.code==="Space") jump();
+  if(e.code==="Space"&&run) vel=-8;
 });
 
-canvas.addEventListener("click",jump);
+gameCanvas.addEventListener("click",()=>{ if(run) vel=-8; });
 
 function endGame(){
-  running=false;
+  run=false;
   cancelAnimationFrame(loopId);
-
-  if(score>highScore){
-    localStorage.highScore=score;
-  }
-
   gameUI.style.display="flex";
-  gameText.innerText="Game Over! Score: "+score;
+  gameText.innerText="Game Over";
 }
 
 </script>
