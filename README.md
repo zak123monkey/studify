@@ -1,1 +1,1 @@
-# studiq
+# studify
