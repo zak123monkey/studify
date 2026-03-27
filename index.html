@@ -143,7 +143,7 @@ Example: Math, Science, English, History
 </div>
 </div>
 
-<!-- TOOLS (RESTORED) -->
+<!-- TOOLS -->
 <div id="tools" class="page">
 <div class="box">
 
@@ -254,6 +254,10 @@ function delTask(i){
   renderTasks();
 }
 
+document.addEventListener("keypress",e=>{
+  if(e.key==="Enter") addTask();
+});
+
 renderTasks();
 
 /* GOAL */
@@ -284,7 +288,7 @@ function quote(){
     q[Math.floor(Math.random()*q.length)];
 }
 
-/* FLAPPY BIRD */
+/* GAME */
 let canvas=document.getElementById("gameCanvas");
 let ctx=canvas.getContext("2d");
 
