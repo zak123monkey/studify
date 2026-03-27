@@ -8,41 +8,41 @@
 <style>
 body {
   margin: 0;
-  font-family: 'Inter', Arial, sans-serif;
-  background: linear-gradient(135deg, #2c003e, #5a0f4d, #a83279, #ff6a3d);
+  font-family: Arial;
+  background: linear-gradient(135deg,#2c003e,#ff6a3d);
   color: white;
 }
 
 nav {
-  display: flex;
-  justify-content: space-around;
-  padding: 15px;
-  background: rgba(0,0,0,0.4);
+  display:flex;
+  justify-content:space-around;
+  padding:15px;
+  background:rgba(0,0,0,0.4);
 }
 
 nav button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
+  background:none;
+  border:none;
+  color:white;
+  cursor:pointer;
 }
 
-.page { display:none; padding:40px; max-width:1000px; margin:auto; }
-.page.active { display:block; }
+.page { display:none; padding:40px; }
+.active { display:block; }
 
 .box {
-  background: rgba(255,255,255,0.08);
-  padding: 25px;
-  border-radius: 20px;
-  margin-top: 20px;
+  background:rgba(255,255,255,0.1);
+  padding:20px;
+  margin-top:20px;
+  border-radius:15px;
 }
 
-textarea, input {
+input, textarea {
   width:100%;
   padding:10px;
-  border-radius:10px;
-  border:none;
   margin-top:10px;
+  border:none;
+  border-radius:10px;
 }
 
 button.main {
@@ -54,10 +54,6 @@ button.main {
   color:white;
   cursor:pointer;
 }
-
-#time { font-size:48px; text-align:center; }
-.progress { height:6px; background:#333; }
-.progress-bar { height:100%; width:0%; background:#22c55e; }
 </style>
 </head>
 
@@ -73,34 +69,25 @@ button.main {
 
 <!-- HOME -->
 <div id="home" class="page active">
-<h1>Welcome to Studify</h1>
+<h1>Studify</h1>
 
 <div class="box">
-<h3>🔥 Study Streak</h3>
-<p id="dashStreak"></p>
-
-<h3>⏳ Sessions Completed</h3>
-<p id="sessions">0</p>
-</div>
-
-<div class="box">
-<p>All-in-one study system.</p>
+🔥 Streak: <span id="streak"></span><br>
+⏳ Sessions: <span id="sessions"></span>
 </div>
 
 <div class="box">
 <h3>Privacy Policy</h3>
-<p>This site may use cookies and third-party services like ads.</p>
+<p>This site may use cookies and third-party services.</p>
 </div>
-
 </div>
 
 <!-- TIMER -->
 <div id="timer" class="page">
 <div class="box">
-<input id="mins">
+<input id="mins" placeholder="Minutes">
 <button class="main" onclick="startTimer()">Start</button>
 <h1 id="time">00:00</h1>
-<div class="progress"><div id="bar" class="progress-bar"></div></div>
 </div>
 </div>
 
@@ -126,8 +113,8 @@ button.main {
 <div id="tools" class="page">
 <div class="box">
 
-<h3>💬 Motivation</h3>
-<button class="main" onclick="quote()">Get Quote</button>
+<h3>💬 Quote</h3>
+<button class="main" onclick="quote()">Get</button>
 <p id="quote"></p>
 
 <h3>📝 Tasks</h3>
@@ -140,16 +127,11 @@ button.main {
 <button class="main" onclick="setGoal()">Save</button>
 <p id="goal"></p>
 
-<!-- NEW FEATURE 1 -->
 <h3>📚 Flashcards</h3>
 <input id="q" placeholder="Question">
 <input id="a" placeholder="Answer">
-<button class="main" onclick="addCard()">Add Card</button>
+<button class="main" onclick="addCard()">Add</button>
 <div id="cards"></div>
-
-<!-- NEW FEATURE 2 -->
-<h3>⏳ Sessions Completed</h3>
-<p id="sessionCount"></p>
 
 </div>
 </div>
@@ -162,11 +144,11 @@ function showPage(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* TIMER + SESSION TRACK */
+/* TIMER + SESSION */
 let timer;
 function startTimer(){
   let m=parseInt(mins.value);
-  if(!m||m<=0) return;
+  if(!m) return;
 
   let t=m*60,l=t;
   clearInterval(timer);
@@ -174,7 +156,6 @@ function startTimer(){
   timer=setInterval(()=>{
     l--;
     time.innerText=Math.floor(l/60)+":"+("0"+l%60).slice(-2);
-    bar.style.width=((t-l)/t)*100+"%";
 
     if(l<=0){
       clearInterval(timer);
@@ -185,11 +166,9 @@ function startTimer(){
   },1000);
 }
 
-/* SESSION DISPLAY */
+/* SESSION */
 function updateSessions(){
-  let s=localStorage.sessions||0;
-  sessionCount.innerText=s;
-  sessions.innerText=s;
+  sessions.innerText=localStorage.sessions||0;
 }
 updateSessions();
 
@@ -207,25 +186,33 @@ function makePlan(){
 
 /* TASKS */
 let tasks=JSON.parse(localStorage.tasks||"[]");
+
 function renderTasks(){
   tasksEl.innerHTML="";
-  tasks.forEach((t,i)=>tasksEl.innerHTML+=`<li>${t} <button onclick="delTask(${i})">❌</button></li>`);
+  tasks.forEach((t,i)=>{
+    tasksEl.innerHTML+=`<li>${t} <button onclick="delTask(${i})">❌</button></li>`;
+  });
 }
+
 function addTask(){
-  if(!taskInput.value.trim()) return;
+  if(!taskInput.value) return;
   tasks.push(taskInput.value);
   localStorage.tasks=JSON.stringify(tasks);
   taskInput.value="";
   renderTasks();
 }
+
 function delTask(i){
   tasks.splice(i,1);
   localStorage.tasks=JSON.stringify(tasks);
   renderTasks();
 }
+
 document.addEventListener("keypress",e=>{
   if(e.key==="Enter") addTask();
 });
+
+let tasksEl=document.getElementById("tasks");
 renderTasks();
 
 /* GOAL */
@@ -238,19 +225,20 @@ function setGoal(){
 /* STREAK */
 let today=new Date().toDateString();
 let last=localStorage.last;
+
 if(last!==today){
-  let s=parseInt(localStorage.streak||"0");
+  let s=parseInt(localStorage.streak||0);
   let y=new Date(); y.setDate(y.getDate()-1);
   s=(last===y.toDateString())?s+1:1;
   localStorage.streak=s;
   localStorage.last=today;
 }
-dashStreak.innerText=localStorage.streak||0;
+streak.innerText=localStorage.streak||0;
 
 /* QUOTE */
 function quote(){
   let q=["Stay focused","Keep going","Discipline wins","You got this"];
-  quote.innerText=q[Math.floor(Math.random()*q.length)];
+  document.getElementById("quote").innerText=q[Math.floor(Math.random()*q.length)];
 }
 
 /* FLASHCARDS */
@@ -267,13 +255,14 @@ function addCard(){
   if(!q.value||!a.value) return;
   cards.push({q:q.value,a:a.value,show:false});
   localStorage.cards=JSON.stringify(cards);
-  q.value="";a.value="";
+  q.value=""; a.value="";
   renderCards();
 }
 
 function flip(i){
+  let el=cardsDiv.children[i];
   cards[i].show=!cards[i].show;
-  cardsDiv.children[i].innerText=cards[i].show?cards[i].a:cards[i].q;
+  el.innerText=cards[i].show?cards[i].a:cards[i].q;
 }
 
 let cardsDiv=document.getElementById("cards");
